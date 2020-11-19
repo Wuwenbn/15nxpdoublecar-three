@@ -1,0 +1,61 @@
+#include "headfile.h"
+
+void car_init()
+{
+  //初始化led
+  gpio_init(LED1,GPO,0,NOPULL); //上电指示灯
+  gpio_init(LED2,GPO,1,NOPULL);
+  gpio_init(LED3,GPO,1,NOPULL);
+  gpio_init(LED4,GPO,1,NOPULL);
+  
+  //初始化蜂鸣器
+  gpio_init(BEEP,GPO,1,NOPULL);
+  gpio_set(BEEP,0);
+  
+  //初始化拨码开关上拉
+  gpio_init(KEY1,GPI,1,PULLUP);
+  gpio_init(KEY2,GPI,1,PULLUP);
+  gpio_init(KEY3,GPI,1,PULLUP);
+  gpio_init(KEY4,GPI,1,PULLUP);
+  
+  //初始化按键
+  gpio_init(Key_U,GPI,1,PULLUP);
+  gpio_init(Key_D,GPI,1,PULLUP);
+  gpio_init(Key_L,GPI,1,PULLUP);
+  gpio_init(Key_R,GPI,1,PULLUP);
+  gpio_init(Key_O,GPI,1,PULLUP);
+  
+  //ADC初始化
+  adc_init(ADC1); //左1
+  adc_init(ADC2);//右1
+  adc_init(ADC3);//左2
+  adc_init(ADC4);//右2
+  
+  //显示屏初始化
+  lcd_init();
+  
+  //初始化编码器
+  ctimer_count_init(TIMER0_COUNT1_A2);//左
+  ctimer_count_init(TIMER3_COUNT0_A4);//右
+  
+  //初始化电机
+   ctimer_pwm_init(TIMER1_PWMCH0_A18,15000,0);//左正
+   ctimer_pwm_init(TIMER1_PWMCH1_A20,15000,0);//左反
+   ctimer_pwm_init(TIMER2_PWMCH1_B4,15000,0);//右正
+   ctimer_pwm_init(TIMER2_PWMCH0_B5,15000,0);//右反
+   
+   //初始化寄存器
+   eeprom_init();
+  
+  //延时0.5s 
+  systick_delay_ms(2000);
+  
+  //中断初始化
+  pit_init_us(5000);//定时中断时间5ms
+  enable_irq(RIT_IRQn);  
+  set_irq_priority(RIT_IRQn,0);//设置优先级
+  
+  pint_init(PINT_CH2,A24,BOTH);  //初始化串口中断
+  pint_enable_irq(PINT_CH2);  //使能
+  set_irq_priority(PIN_INT2_IRQn,2);//设置优先级
+}
